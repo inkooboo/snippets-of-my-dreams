@@ -27,6 +27,7 @@
 		84F796EC15B6E48700469A6F /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		84F796F615B6E54600469A6F /* master.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = master.hpp; sourceTree = "<group>"; };
 		84F796F815B6E54700469A6F /* subsystem.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = subsystem.hpp; sourceTree = "<group>"; };
+		84F7970915B6EAC200469A6F /* noncopyable.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = noncopyable.hpp; path = ../../noncopyable.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +60,7 @@
 		84F796EB15B6E48700469A6F /* subsystems */ = {
 			isa = PBXGroup;
 			children = (
+				84F7970915B6EAC200469A6F /* noncopyable.hpp */,
 				84F796F615B6E54600469A6F /* master.hpp */,
 				84F796F815B6E54700469A6F /* subsystem.hpp */,
 				84F796EC15B6E48700469A6F /* main.cpp */,
@@ -205,6 +207,7 @@
 				84F796F415B6E48700469A6F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
