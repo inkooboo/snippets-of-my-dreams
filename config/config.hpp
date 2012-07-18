@@ -3,7 +3,6 @@
 //  config
 //
 //  Created by Andrey Kubarkov on 7/18/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
 #ifndef config_config_hpp
@@ -24,27 +23,28 @@ public:
         , store_each_change
     };
     
-    inline explicit config_t(const char *file_name, store_policy policy = store_on_destruction);
+    inline explicit config_t(const char *file_name = "", store_policy policy = store_on_destruction);
     inline ~config_t();
     
     template <typename T>
     inline void set(const char *name, const T &value);
     
     template <typename T>
-    inline T get(const char *name);
+    inline T get(const char *name) const;
     
 private:
-    
     inline void store();
     inline void load();
     
-    inline std::string escape(const std::string &str);
-    inline std::string unescape(const std::string &str);
+    inline static std::string escape(const std::string &str);
+    inline static std::string unescape(const std::string &str);
     
-    std::string m_file_name;
-    store_policy m_policy;
+    const std::string m_file_name;
+    const store_policy m_policy;
     std::map<std::string, std::string> m_properties;
 };
+
+
 
 // implementation
 
@@ -77,26 +77,43 @@ inline void config_t::set(const char *name, const T &value)
 }
 
 template <typename T>
-inline T config_t::get(const char *name)
+inline T config_t::get(const char *name) const
 {
     T ret;
     
-    std::stringstream ss;
-    ss << m_properties[name];
+    std::stringstream ss;    
+    auto prop_it = m_properties.find(name);
+    if (prop_it != m_properties.end())
+    {
+        ss << prop_it->second;
+    }
     ss >> ret;
     
     return ret;
 }
 
 template <>
-inline std::string config_t::get<std::string>(const char *name)
+inline std::string config_t::get<std::string>(const char *name) const
 {
-    return m_properties[name];
+    std::string ret;
+    
+    auto prop_it = m_properties.find(name);
+    if (prop_it != m_properties.end())
+    {
+        ret = prop_it->second;
+    }
+    
+    return ret;
 }
 
 
 inline void config_t::store()
 {
+    if (m_file_name.empty())
+    {
+        return;
+    }
+    
     std::ofstream f(m_file_name.c_str(), std::ios_base::out | std::ios_base::trunc);
     
     for (auto &property : m_properties)
@@ -107,6 +124,11 @@ inline void config_t::store()
 
 inline void config_t::load()
 {
+    if (m_file_name.empty())
+    {
+        return;
+    }
+
     std::ifstream f(m_file_name.c_str(), std::ios_base::in);
     
     if (!f.is_open())
@@ -128,7 +150,7 @@ inline void config_t::load()
         std::string name = unescape(line.substr(0, space));
         std::string value = unescape(line.substr(space + 1, line.length() - space - 1));
         
-        m_properties[name] = value;
+        m_properties[name].swap(value);
     }
 }
 
