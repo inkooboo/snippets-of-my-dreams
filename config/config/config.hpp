@@ -8,12 +8,14 @@
 #ifndef config_config_hpp
 #define config_config_hpp
 
+#include "noncopyable.hpp"
+
 #include <string>
 #include <sstream>
 #include <fstream>
 #include <map>
 
-class config_t
+class config_t : private noncopyable_t
 {
 public:
     
@@ -21,6 +23,7 @@ public:
     {
           store_on_destruction
         , store_each_change
+        , store_never
     };
     
     inline explicit config_t(const char *file_name = "", store_policy policy = store_on_destruction);

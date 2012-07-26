@@ -2,11 +2,12 @@
 # define __MASTER_HPP__
 
 # include "subsystem.hpp"
+# include "noncopyable.hpp"
 
 # include <vector>
 # include <cassert>
 
-class master_t
+class master_t : private noncopyable_t
 {
 public:
     template <typename SubsystemType>
