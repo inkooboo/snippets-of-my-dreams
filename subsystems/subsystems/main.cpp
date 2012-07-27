@@ -10,26 +10,30 @@
 
 #include <iostream>
 
-class capturer : public subsystem_t
+class capturer
 {
 public:
     
-    int get_int()
+    capturer(int x, int y, char f)
+        : m_x(x + y - f)
+    {}
+    
+    int get_x()
     {
-        return 42;
+        return m_x;
     }
-
+    
 private:
-    friend class master_t;
-    explicit capturer(master_t *master)
-        : subsystem_t(master)
-    {
-    }
+    int m_x;
 };
 
 class render : public subsystem_t
 {
 public:
+    render(const char *message)
+        : m_message(message)
+    {
+    }
     
     virtual void start() 
     {
@@ -44,30 +48,27 @@ public:
     
     void start_render()
     {
-        int n = master().subsystem<capturer>().get_int();
+        int n = master().subsystem<capturer>().get_x();
         
-        std::cout << "render " << n << std::endl;
+        std::cout << m_message << n << std::endl;
     }
     
 private:
-    friend class master_t;
-    explicit render(master_t *master)
-        : subsystem_t(master)
-    {
-    }
+    const char *m_message;
 };
-
 
 int main()
 {
     master_t master;
     
-    master.add_subsystem<capturer>();
-    master.add_subsystem<render>();
+    master.add_subsystem<capturer>(42, 0, 'a');
+    master.add_subsystem<render>("Yababadaba-DOOOO:");
 
     master.start();
     
     master.subsystem<render>().start_render();
+    
+    master.stop();
     
     return 0;
 }

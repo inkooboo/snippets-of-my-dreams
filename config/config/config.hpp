@@ -26,7 +26,7 @@ public:
         , store_never
     };
     
-    inline explicit config_t(const char *file_name = "", store_policy policy = store_on_destruction);
+    inline explicit config_t(const char *file_name = "", store_policy policy = store_never);
     inline ~config_t();
     
     template <typename T>
