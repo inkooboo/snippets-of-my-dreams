@@ -27,6 +27,7 @@ public:
     };
     
     inline explicit config_t(const char *file_name = "", store_policy policy = store_never);
+    inline explicit config_t(const std::string &source);
     inline ~config_t();
     
     template <typename T>
@@ -36,8 +37,8 @@ public:
     inline T get(const char *name) const;
     
 private:
-    inline void store();
-    inline void load();
+    inline void store() const;
+    inline void load(std::istream &input);
     
     inline static std::string escape(const std::string &str);
     inline static std::string unescape(const std::string &str);
@@ -49,13 +50,34 @@ private:
 
 
 
-// implementation
+// Implementation
 
 inline config_t::config_t(const char *file_name, store_policy policy)
     : m_file_name(file_name)
     , m_policy(policy)
 {
-    load();
+    if (m_file_name.empty())
+    {
+        return;
+    }
+    
+    std::ifstream f(m_file_name.c_str(), std::ios_base::in);
+    
+    if (!f.is_open())
+    {
+        return;
+    }
+    
+    load(f);
+}
+
+inline config_t::config_t(const std::string &source)
+    : m_file_name("")
+    , m_policy(store_never)
+{
+    std::istringstream input(source);
+    
+    load(input);
 }
 
 inline config_t::~config_t()
@@ -110,7 +132,7 @@ inline std::string config_t::get<std::string>(const char *name) const
 }
 
 
-inline void config_t::store()
+inline void config_t::store() const
 {
     if (m_file_name.empty())
     {
@@ -125,24 +147,12 @@ inline void config_t::store()
     }
 }
 
-inline void config_t::load()
+inline void config_t::load(std::istream &input)
 {
-    if (m_file_name.empty())
-    {
-        return;
-    }
-
-    std::ifstream f(m_file_name.c_str(), std::ios_base::in);
-    
-    if (!f.is_open())
-    {
-        return;
-    }
-    
-    while (!f.eof()) 
+    while (!input.eof()) 
     {
         std::string line;
-        std::getline(f, line, '\n');
+        std::getline(input, line, '\n');
         
         size_t space = line.find(' ');
         if (std::string::npos == space)
