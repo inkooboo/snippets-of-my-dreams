@@ -66,20 +66,20 @@ inline master_t::~master_t()
 
 namespace internal
 {
-	template <typename SubsystemType>
-	inline SubsystemType ** subsystem_instance()
-	{
-	    static SubsystemType *instance = 0;
-	    return &instance;
-	}
+    template <typename SubsystemType>
+    inline SubsystemType ** subsystem_instance()
+    {
+        static SubsystemType *instance = 0;
+        return &instance;
+    }
 
-	template <typename SubsystemType>
-	struct unmanaged_holder_t : public subsystem_t
-	{
-		template <typename... Args>
-		inline unmanaged_holder_t(Args ...args) : holder(args...) {}
-		SubsystemType holder;
-	};
+    template <typename SubsystemType>
+    struct unmanaged_holder_t : public subsystem_t
+    {
+        template <typename... Args>
+        inline unmanaged_holder_t(Args ...args) : holder(args...) {}
+        SubsystemType holder;
+    };
 }
 
 template <typename SubsystemType, typename... Args>

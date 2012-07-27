@@ -13,19 +13,19 @@
 class single
 {
 public:
-	static single & singleton()
-	{
-		static single single_instance;
-		return single_instance;
-	}
+    static single & singleton()
+    {
+        static single single_instance;
+        return single_instance;
+    }
 
-	void do_nothing()
-	{
+    void do_nothing()
+    {
         std::cout << "single do_nothing" << std::endl;
-	}
+    }
 
 private:
-	single() {};
+    single() {};
 };
 
 class capturer
