@@ -1,3 +1,10 @@
+//
+//  subsystem.hpp
+//  subsystems
+//
+//  Created by Andrey Kubarkov on 7/27/12.
+//
+
 #ifndef __SUBSYSTEM_HPP__
 # define __SUBSYSTEM_HPP__
 
@@ -6,6 +13,7 @@ class master_t;
 class subsystem_t
 {
     friend class master_t;
+
 public:
     virtual void start() {}
     virtual void stop() {}

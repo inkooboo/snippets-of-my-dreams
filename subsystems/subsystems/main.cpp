@@ -1,14 +1,32 @@
 //
-//  main.cpp
+//  master.hpp
 //  subsystems
 //
-//  Created by Admin on 7/18/12.
+//  Created by Andrey Kubarkov on 7/27/12.
 //
 
 #include "subsystem.hpp"
 #include "master.hpp"
 
 #include <iostream>
+
+class single
+{
+public:
+	static single & singleton()
+	{
+		static single single_instance;
+		return single_instance;
+	}
+
+	void do_nothing()
+	{
+        std::cout << "single do_nothing" << std::endl;
+	}
+
+private:
+	single() {};
+};
 
 class capturer
 {
@@ -51,19 +69,25 @@ public:
         int n = master().subsystem<capturer>().get_x();
         
         std::cout << m_message << n << std::endl;
+
+        master().subsystem<single>().do_nothing();
     }
     
 private:
     const char *m_message;
 };
 
+struct foo
+{};
+
 int main()
 {
     master_t master;
     
-    master.add_subsystem<capturer>(42, 0, 'a');
-    master.add_subsystem<render>("Yababadaba-DOOOO:");
-
+    master.add_unmanaged_subsystem<capturer>(42, 0, 'a');
+    master.add_unmanaged_subsystem<foo>();
+    master.add_managed_subsystem<render>("Yababadaba-DOOOO:");
+    master.add_external_subsystem<single>(&single::singleton());
     master.start();
     
     master.subsystem<render>().start_render();
