@@ -1,8 +1,6 @@
 #ifndef __SUBSYSTEM_HPP__
 # define __SUBSYSTEM_HPP__
 
-#include "noncopyable.hpp"
-
 class master_t;
 
 class subsystem_t
