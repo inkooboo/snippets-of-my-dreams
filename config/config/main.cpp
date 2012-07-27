@@ -12,7 +12,7 @@
 int main()
 {
     {
-        config_t config("test1.txt");
+        config_t config("test1.txt", config_t::store_on_destruction);
         
         config.set("string", "Hello World");
         config.set("int", 42);
