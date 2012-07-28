@@ -1,5 +1,5 @@
 //
-//  master.hpp
+//  main.cpp
 //  subsystems
 //
 //  Created by Andrey Kubarkov on 7/27/12.
