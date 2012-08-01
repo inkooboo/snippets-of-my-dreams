@@ -9,47 +9,52 @@
 #include "master.hpp"
 
 #include <iostream>
+#include <string>
 
-class single
+class processor
 {
 public:
-    static single & singleton()
+    static processor & singleton()
     {
-        static single single_instance;
-        return single_instance;
+        static processor instance;
+        return instance;
     }
 
-    void do_nothing()
+    void * process(void *data)
     {
-        std::cout << "single do_nothing" << std::endl;
+        std::cout << "processor: process" << std::endl;
+        return data;
     }
 
 private:
-    single() {};
+    processor() {};
+    processor(const processor&) {};
 };
 
 class capturer
 {
 public:
     
-    capturer(int x, int y, char f)
-        : m_x(x + y - f)
+    capturer(const std::string &file_name)
+        : m_file_name(file_name)
     {}
     
-    int get_x()
+    void * frame()
     {
-        return m_x;
+        return nullptr;
     }
     
 private:
-    int m_x;
+    const std::string m_file_name;
 };
 
 class render : public subsystem_t
 {
 public:
-    render(const char *message)
-        : m_message(message)
+    render(const std::string &name, int width, int height)
+        : m_name(name)
+        , m_width(width)
+        , m_height(height)
     {
     }
     
@@ -64,33 +69,34 @@ public:
     }
 
     
-    void start_render()
+    void render_frame(void *frame)
     {
-        int n = master().subsystem<capturer>().get_x();
+        void *processed = master().subsystem<processor>().process(frame);
         
-        std::cout << m_message << n << std::endl;
-
-        master().subsystem<single>().do_nothing();
+        std::cout << "Render[" << m_name << "]: render_frame " << processed << std::endl;
     }
     
 private:
-    const char *m_message;
+    const std::string m_name;
+    int m_width;
+    int m_height;
 };
 
-struct foo
-{};
 
 int main()
 {
     master_t master;
     
-    master.add_unmanaged_subsystem<capturer>(42, 0, 'a');
-    master.add_unmanaged_subsystem<foo>();
-    master.add_managed_subsystem<render>("Yababadaba-DOOOO:");
-    master.add_external_subsystem<single>(&single::singleton());
+    master.add_unmanaged_subsystem<capturer>("test1.avi");
+    master.add_managed_subsystem<render>("wnd1:", 640, 480);
+    master.add_external_subsystem<processor>(&processor::singleton());
+    
     master.start();
     
-    master.subsystem<render>().start_render();
+    //while (true)
+    void *frame = master.subsystem<capturer>().frame();
+    master.subsystem<render>().render_frame(frame);
+    // }
     
     master.stop();
     
