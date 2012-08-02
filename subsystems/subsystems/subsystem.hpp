@@ -8,8 +8,6 @@
 #ifndef __SUBSYSTEM_HPP__
 # define __SUBSYSTEM_HPP__
 
-class master_t;
-
 /** @class subsystem_t
  * @brief Interface for managed subsystem.
  */

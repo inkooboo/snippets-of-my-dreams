@@ -13,6 +13,7 @@
 
 # include <vector>
 # include <cassert>
+# include <memory>
 
 /** @class master_t
  * @brief Subsystems manager.
@@ -39,10 +40,9 @@ public:
     inline void stop();
     
     inline master_t();
-    inline ~master_t();
     
 private:
-    std::vector<subsystem_t *> m_subsystems;
+    std::vector<std::unique_ptr<subsystem_t>> m_subsystems;
 };
 
 // Implementation
@@ -70,14 +70,6 @@ inline master_t::master_t()
     was_created = true;
 }
 
-inline master_t::~master_t()
-{
-    for (auto &subsystem : m_subsystems)
-    {
-        delete subsystem;
-    }
-}
-
 namespace internal
 {
     template <typename SubsystemType>
@@ -103,7 +95,7 @@ inline void master_t::add_managed_subsystem(Args ...args)
     assert(*instance == 0 && "Instance for this subsystem was already added!");
     
     *instance = new SubsystemType(args...);
-    m_subsystems.push_back(*instance);
+    m_subsystems.push_back(std::unique_ptr<subsystem_t>(*instance));
 }
 
 template <typename SubsystemType, typename... Args>
@@ -114,7 +106,7 @@ inline void master_t::add_unmanaged_subsystem(Args ...args)
     
     internal::unmanaged_holder_t<SubsystemType> *unmanaged_holder = new internal::unmanaged_holder_t<SubsystemType>(args...);
     *instance = &(unmanaged_holder->holder);
-    m_subsystems.push_back(unmanaged_holder);
+    m_subsystems.push_back(std::unique_ptr<subsystem_t>(unmanaged_holder));
 }
 
 template <typename SubsystemType>
