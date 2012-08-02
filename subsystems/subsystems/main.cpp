@@ -58,12 +58,12 @@ public:
     {
     }
     
-    virtual void start() 
+    virtual void start() override
     {
         std::cout << "render start" << std::endl;
     }
     
-    virtual void stop() 
+    virtual void stop() override
     {
         std::cout << "render stop" << std::endl;
     }
@@ -99,7 +99,7 @@ int main()
     // }
     
     master.stop();
-    
+
     return 0;
 }
 
