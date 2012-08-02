@@ -71,7 +71,7 @@ public:
     
     void render_frame(void *frame)
     {
-        void *processed = master().subsystem<processor>().process(frame);
+        void *processed = master_t::subsystem<processor>().process(frame);
         
         std::cout << "Render[" << m_name << "]: render_frame " << processed << std::endl;
     }
@@ -85,20 +85,20 @@ private:
 
 int main()
 {
-    master_t master;
+    master_t master_instance;
     
-    master.add_unmanaged_subsystem<capturer>("test1.avi");
-    master.add_managed_subsystem<render>("wnd1:", 640, 480);
-    master.add_external_subsystem<processor>(&processor::singleton());
+    master_instance.add_unmanaged_subsystem<capturer>("test1.avi");
+    master_instance.add_managed_subsystem<render>("wnd1:", 640, 480);
+    master_instance.add_external_subsystem<processor>(&processor::singleton());
     
-    master.start();
+    master_instance.start();
     
     //while (true)
-    void *frame = master.subsystem<capturer>().frame();
-    master.subsystem<render>().render_frame(frame);
+    void *frame = master_instance.subsystem<capturer>().frame();
+    master_instance.subsystem<render>().render_frame(frame);
     // }
     
-    master.stop();
+    master_instance.stop();
 
     return 0;
 }

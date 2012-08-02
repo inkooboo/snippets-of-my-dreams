@@ -14,6 +14,12 @@
 # include <vector>
 # include <cassert>
 
+/** @class master_t
+ * @brief Subsystems manager.
+ * @note
+ * Only one instance of this class can be created
+ * and only once during program execution.
+ */
 class master_t : private noncopyable_t
 {
 public:
@@ -27,7 +33,7 @@ public:
     inline void add_external_subsystem(SubsystemType *raw_pointer);
     
     template <typename SubsystemType>
-    inline SubsystemType & subsystem();
+    static inline SubsystemType & subsystem();
     
     inline void start();
     inline void stop();
@@ -97,7 +103,6 @@ inline void master_t::add_managed_subsystem(Args ...args)
     assert(*instance == 0 && "Instance for this subsystem was already added!");
     
     *instance = new SubsystemType(args...);
-    static_cast<subsystem_t *>(*instance)->m_master = this;
     m_subsystems.push_back(*instance);
 }
 
