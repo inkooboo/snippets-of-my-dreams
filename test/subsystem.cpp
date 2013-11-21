@@ -1,12 +1,4 @@
-//
-//  main.cpp
-//  subsystems
-//
-//  Created by Andrey Kubarkov on 7/27/12.
-//
-
-#include "subsystem.hpp"
-#include "master.hpp"
+#include <subsystem.hpp>
 
 #include <iostream>
 #include <string>
@@ -83,7 +75,7 @@ private:
 };
 
 
-int main()
+int subsystem_test()
 {
     master_t master_instance;
     

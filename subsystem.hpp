@@ -1,19 +1,24 @@
-//
-//  master.hpp
-//  subsystems
-//
-//  Created by Andrey Kubarkov on 7/27/12.
-//
-
 #ifndef __MASTER_HPP__
-# define __MASTER_HPP__
+#define __MASTER_HPP__
 
-# include "subsystem.hpp"
-# include "../../noncopyable.hpp"
+#include <subsystem.hpp>
+#include <noncopyable.hpp>
+#include <vector>
+#include <cassert>
+#include <memory>
 
-# include <vector>
-# include <cassert>
-# include <memory>
+/** @class subsystem_t
+ * @brief Interface for managed subsystem.
+ */
+class subsystem_t
+{
+public:
+    virtual void start() {}
+    virtual void stop() {}
+    
+    virtual ~subsystem_t() = 0;
+};
+
 
 /** @class master_t
  * @brief Subsystems manager.
@@ -25,27 +30,31 @@ class master_t : private noncopyable_t
 {
 public:
     template <typename SubsystemType, typename... Args>
-    inline void add_managed_subsystem(Args ...args);
+    void add_managed_subsystem(Args ...args);
     
     template <typename SubsystemType, typename... Args>
-    inline void add_unmanaged_subsystem(Args ...args);
+    void add_unmanaged_subsystem(Args ...args);
     
     template <typename SubsystemType>
-    inline void add_external_subsystem(SubsystemType *raw_pointer);
+    void add_external_subsystem(SubsystemType *raw_pointer);
     
     template <typename SubsystemType>
-    static inline SubsystemType & subsystem();
+    static SubsystemType & subsystem();
     
-    inline void start();
-    inline void stop();
+    void start();
+    void stop();
     
-    inline master_t();
+    master_t();
     
 private:
     std::vector<std::unique_ptr<subsystem_t>> m_subsystems;
 };
 
 // Implementation
+
+inline subsystem_t::~subsystem_t()
+{
+}
 
 inline void master_t::start()
 {
@@ -127,4 +136,4 @@ inline SubsystemType & master_t::subsystem()
     return **instance;
 }
 
-#endif //__MASTER_HPP__
+#endif

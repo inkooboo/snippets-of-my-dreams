@@ -1,15 +1,7 @@
-//
-//  main.cpp
-//  config
-//
-//  Created by Andrey Kubarkov on 7/18/12.
-//
-
-#include "config.hpp"
-
+#include <config.hpp>
 #include <cassert>
 
-int main()
+int config_test()
 {
     {
         config_t config("test1.txt", config_t::store_on_destruction);
