@@ -9,6 +9,7 @@
 template <typename R, typename... ARGS>
 class fixed_function_t : private noncopyable_t {
     enum {STORAGE_SIZE = 32};
+    enum {ALIGNMENT = 8};
 public:
     fixed_function_t()
         : m_object_ptr(&m_storage)
@@ -57,7 +58,7 @@ public:
     }
 
 private:
-    typename std::aligned_storage<STORAGE_SIZE, STORAGE_SIZE>::type m_storage;
+    typename std::aligned_storage<STORAGE_SIZE, ALIGNMENT>::type m_storage;
 
     void *m_object_ptr;
 
