@@ -6,7 +6,7 @@
 #include <cstring>
 #include <utility>
 
-template <size_t STORAGE_SIZE>
+template <typename R, size_t STORAGE_SIZE = 32>
 class callback_t : private noncopyable_t {
 public:
     callback_t()
@@ -47,11 +47,12 @@ public:
         }
     }
 
-    void operator()() const
+    R operator()() const
     {
         if (m_method_ptr) {
-            (*m_method_ptr)(m_object_ptr);
+            return (*m_method_ptr)(m_object_ptr);
         }
+        return R();
     }
 
 private:
@@ -59,10 +60,11 @@ private:
 
     void *m_object_ptr;
 
-    typedef void (*method_type)(void *);
-
+    typedef R (*method_type)(void *);
     method_type m_method_ptr;
-    method_type m_delete_ptr;
+
+    typedef void (*delete_type)(void *);
+    delete_type m_delete_ptr;
 
     void move_from_other(callback_t &o)
     {
@@ -76,9 +78,9 @@ private:
     }
 
     template <class T>
-    static void method_stub(void *object_ptr)
+    static R method_stub(void *object_ptr)
     {
-        static_cast<T *>(object_ptr)->operator()();
+        return static_cast<T *>(object_ptr)->operator()();
     }
 
     template <class T>
