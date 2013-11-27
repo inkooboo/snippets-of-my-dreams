@@ -6,12 +6,12 @@ CONFIG += C++11
 
 SOURCES += main.cpp \
     test/config.cpp \
-    test/callback.cpp \
-    test/subsystem.cpp
+    test/subsystem.cpp \
+    test/fixed_function.cpp
 
 HEADERS += \
     noncopyable.hpp \
     config.hpp \
     subsystem.hpp \
-    callback.hpp
+    fixed_function.hpp
 

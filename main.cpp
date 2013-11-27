@@ -10,6 +10,6 @@ int main()
 {
     TEST(config)
     TEST(subsystem)
-    TEST(callback)
+    TEST(fixed_function)
     return 0;
 }
