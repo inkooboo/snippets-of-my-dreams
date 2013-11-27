@@ -40,6 +40,12 @@ struct Foo {
     }
 };
 
+
+auto l = [](int x)
+{
+    return x;
+};
+
 using namespace std::placeholders;
 
 int fixed_function_test()
@@ -67,6 +73,9 @@ int fixed_function_test()
 
     fixed_function_t<std::string> cbclass_static_method(std::bind(&Foo::static_method));
     assert(cbclass_static_method() == "static_method");
+
+    fixed_function_t<int, int> cbl(std::bind(l, _1));
+    assert(42 == cbl(42));
 
     return 0;
 }
