@@ -6,10 +6,13 @@
 #include <cstring>
 #include <utility>
 
+template <typename SIGNATURE>
+class fixed_function_t;
+
 template <typename R, typename... ARGS>
-class fixed_function_t : private noncopyable_t {
+class fixed_function_t<R(ARGS...)> : private noncopyable_t {
     enum {STORAGE_SIZE = 32};
-    enum {ALIGNMENT = 8};
+    enum {ALIGNMENT = sizeof(int)};
 public:
     fixed_function_t()
         : m_object_ptr(&m_storage)

@@ -40,7 +40,6 @@ struct Foo {
     }
 };
 
-
 auto l = [](int x)
 {
     return x;
@@ -50,31 +49,31 @@ using namespace std::placeholders;
 
 int fixed_function_test()
 {
-    fixed_function_t<void> cbff1(std::bind(free_func1));
+    fixed_function_t<void()> cbff1(std::bind(free_func1));
     cbff1();
     assert(1 == var);
 
-    fixed_function_t<void> cbff2(std::bind(free_func2, 2));
+    fixed_function_t<void()> cbff2(std::bind(free_func2, 2));
     cbff2();
     assert(2 == var);
 
-    fixed_function_t<int> cbff3(std::bind(free_func3));
+    fixed_function_t<int()> cbff3(std::bind(free_func3));
     assert(3 == cbff3());
 
-    fixed_function_t<int, int> cbff4(std::bind(free_func4, _1));
+    fixed_function_t<int(int)> cbff4(std::bind(free_func4, _1));
     assert(4 == cbff4(4));
 
-    fixed_function_t<std::string, std::string, std::string> cbff5(std::bind(free_func5, _1, _2));
+    fixed_function_t<std::string(std::string, std::string)> cbff5(std::bind(free_func5, _1, _2));
     assert("55" == cbff5("5", "5"));
 
     Foo foo;
-    fixed_function_t<std::string *> cb_class_method(std::bind(&Foo::method, &foo));
+    fixed_function_t<std::string *()> cb_class_method(std::bind(&Foo::method, &foo));
     assert(&foo.method_var == cb_class_method());
 
-    fixed_function_t<std::string> cbclass_static_method(std::bind(&Foo::static_method));
+    fixed_function_t<std::string()> cbclass_static_method(std::bind(&Foo::static_method));
     assert(cbclass_static_method() == "static_method");
 
-    fixed_function_t<int, int> cbl(std::bind(l, _1));
+    fixed_function_t<int(int)> cbl(std::bind(l, _1));
     assert(42 == cbl(42));
 
     return 0;
