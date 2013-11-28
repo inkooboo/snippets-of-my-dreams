@@ -4,7 +4,9 @@
 #include <noncopyable.hpp>
 #include <type_traits>
 #include <cstring>
+#include <stdexcept>
 #include <utility>
+#include <functional>
 
 template <typename SIGNATURE>
 class fixed_function_t;
@@ -21,17 +23,29 @@ public:
     {
     }
 
-    template <typename U>
-    fixed_function_t(U &&object)
+    template <typename FUNC>
+    fixed_function_t(FUNC &&object)
     {
-        typedef typename std::remove_reference<U>::type unref_type;
+        typedef typename std::remove_reference<FUNC>::type unref_type;
 
         static_assert(sizeof(unref_type) < STORAGE_SIZE,
                       "functional object don't fit into internal storage");
 
-        m_object_ptr = new (&m_storage) unref_type(std::forward<U>(object));
-        m_method_ptr = &method_stub<unref_type>;
-        m_delete_ptr = &delete_stub<unref_type>;
+        m_object_ptr = new (&m_storage) unref_type(std::forward<FUNC>(object));
+
+        m_method_ptr = [](void *object_ptr, ARGS... args) -> R {
+            return static_cast<unref_type *>(object_ptr)->operator()(args...);
+        };
+
+        m_delete_ptr = [](void *object_ptr) {
+            static_cast<unref_type *>(object_ptr)->~unref_type();
+        };
+    }
+
+    template <typename RET, typename... PARAMS>
+    fixed_function_t(RET(*func_ptr)(PARAMS...))
+        : fixed_function_t(std::bind(func_ptr))
+    {
     }
 
     fixed_function_t(fixed_function_t &&o)
@@ -54,10 +68,10 @@ public:
 
     R operator()(ARGS... args) const
     {
-        if (m_method_ptr) {
-            return (*m_method_ptr)(m_object_ptr, args...);
+        if (!m_method_ptr) {
+            throw std::runtime_error("call of empty functor");
         }
-        return R();
+        return (*m_method_ptr)(m_object_ptr, args...);
     }
 
 private:
@@ -80,18 +94,6 @@ private:
 
         o.m_method_ptr = nullptr;
         o.m_delete_ptr = nullptr;
-    }
-
-    template <class T>
-    static R method_stub(void *object_ptr, ARGS... args)
-    {
-        return static_cast<T *>(object_ptr)->operator()(args...);
-    }
-
-    template <class T>
-    static void delete_stub(void *object_ptr)
-    {
-        static_cast<T *>(object_ptr)->~T();
     }
 };
 
