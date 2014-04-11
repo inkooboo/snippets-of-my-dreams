@@ -87,6 +87,8 @@ private:
 
     void move_from_other(fixed_function_t &o)
     {
+        this->~fixed_function_t();
+        
         m_method_ptr = o.m_method_ptr;
         m_delete_ptr = o.m_delete_ptr;
 
