@@ -1,7 +1,6 @@
 #ifndef __MASTER_HPP__
 #define __MASTER_HPP__
 
-#include <subsystem.hpp>
 #include <noncopyable.hpp>
 #include <vector>
 #include <cassert>
