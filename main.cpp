@@ -10,6 +10,5 @@ int main()
 {
     TEST(config)
     TEST(subsystem)
-    TEST(fixed_function)
     return 0;
 }
